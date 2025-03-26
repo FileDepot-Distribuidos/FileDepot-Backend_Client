@@ -13,7 +13,8 @@ class SoapService {
         }
     }
 
-    async processFileRequest(action, data) {
+    // Método genérico para solicitudes SOAP
+    async processSoapRequest(action, data) {
         await this.initClient();
         return this.client[action + 'Async'](data)
             .then(response => response[0])
@@ -23,17 +24,25 @@ class SoapService {
             });
     }
 
+    // Procesar solicitudes de archivos
+    async processFileRequest(action, data) {
+        return this.processSoapRequest(action, data);
+    }
+
+    // Procesar solicitudes de directorios
     async processDirectoryRequest(action, data) {
-        return this.processFileRequest(action, data);
+        return this.processSoapRequest(action, data);
     }
 
+    // Procesar solicitudes de compartir archivos/directorios
     async processShareRequest(action, data) {
-        return this.processFileRequest(action, data);
+        return this.processSoapRequest(action, data);
     }
 
+    // Autenticación
     async authRequest(credentials) {
-        return this.processFileRequest('AuthRequest', credentials);
+        return this.processSoapRequest('AuthRequest', credentials);
     }
 }
 
-export default SoapService;
+export default new SoapService();
