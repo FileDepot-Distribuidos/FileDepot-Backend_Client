@@ -6,6 +6,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(json()); 
+app.use(express.json());
 
 // Importar las rutas
 import routes from './routes/routes.js';

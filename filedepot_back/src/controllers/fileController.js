@@ -10,6 +10,7 @@ class FileController {
             // Llamada al servicio SOAP
             const response = await SoapService.processFileRequest({
                 action: 'upload',
+                base64,
                 name,
                 size,
                 owner

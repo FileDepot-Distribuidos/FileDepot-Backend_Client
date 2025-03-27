@@ -1,17 +1,23 @@
 import jwt from 'jsonwebtoken';
-import SoapService from '../services/soapService.js';
+import SoapService from '../services/SoapService.js';
 
 class AuthController {
     // Validar credenciales a través del servicio SOAP y generar JWT
-    static async sendCredentials(req, res) {
+    static async login(req, res) {
         try {
             const { email, password } = req.body;
+            console.log('Email:', email);
+            console.log('Password:', password);
 
             // Llamada al servicio SOAP
-            const response = await SoapService.authRequest({ email, password });
+            const response = await SoapService.processAuthRequest({
+                action: 'login',
+                email,
+                password,
+            });
 
             // Validar respuesta del servicio SOAP
-            if (response && response.success) {
+            if (response?.success) {
                 // Generar JWT
                 const token = jwt.sign(
                     { userID: response.userID, email: response.email }, 
@@ -29,6 +35,32 @@ class AuthController {
         }
     }
 
+    // Registrar un nuevo usuario a través del servicio SOAP
+    static async register(req, res) {
+        try {
+            const { email, password, phone } = req.body;
+
+            // Llamada al servicio SOAP
+            const response = await SoapService.processAuthRequest({
+                action: 'register',
+                email,
+                password,
+                phone
+            });
+
+            // Validar respuesta del servicio SOAP
+            if (response.success) {
+                return res.status(201).json({ message: 'Usuario registrado exitosamente' });
+            }
+
+            return res.status(400).json({ message: 'Error al registrar usuario' });
+
+        } catch (error) {
+            console.error('Error al registrar usuario:', error);
+            return res.status(500).json({ message: 'Error interno en el servidor' });
+        }
+    }
+
     // Validar JWT
     static validateJWT(req, res) {
         const token = req.headers.authorization?.split(' ')[1];
@@ -42,7 +74,9 @@ class AuthController {
                 return res.status(403).json({ message: 'Token inválido' });
             }
 
-            res.status(200).json(decoded);
+            req.user = decoded;
+            next();
+
         });
     }
 }
