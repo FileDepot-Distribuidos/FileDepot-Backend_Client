@@ -1,6 +1,7 @@
 import soap from 'soap';
 
-const WSDL_URL = 'http://example.com/soap?wsdl'; // Reemplaza con la URL real del WSDL
+const WSDL_URL = "http://localhost:2005/FileDepotService?wsdl";
+
 
 class SoapService {
     constructor() {
@@ -9,15 +10,24 @@ class SoapService {
 
     async initClient() {
         if (!this.client) {
-            this.client = await soap.createClientAsync(WSDL_URL);
+            const options = { 
+                wsdl_headers: { Connection: "keep-alive" }, 
+                wsdl_options: { timeout: 5000 } 
+            };
+            
+            this.client = await soap.createClientAsync(WSDL_URL, options);
         }
     }
 
     // Método genérico para solicitudes SOAP
     async processSoapRequest(action, data) {
+
         await this.initClient();
-        return this.client[action + 'Async'](data)
-            .then(response => response[0])
+        return this.client["processAuthRequestAsync"](data)
+            .then(response => {
+                console.log("📡 XML Enviado:\n", this.client.lastRequest);
+                return response[0];
+            })
             .catch(err => {
                 console.error(`SOAP Error in ${action}:`, err);
                 throw err;
@@ -40,28 +50,12 @@ class SoapService {
     }
 
     // Autenticación
-    
+
     async processAuthRequest(action, data) {
-        return this.processSoapRequest(action, data);
+        const payload = { action, data: JSON.stringify(data) };        
+        const response = await this.processSoapRequest("processAuthRequest", payload);
+        return JSON.parse(response.return);
     }
-
-    // async processAuthRequest({ action, email, password }) {
-    //     console.log(`Mocked SOAP Request: action=${action}, email=${email}, password=${password}`);
-
-    //     if (action === 'login') {
-    //         // Simulación de una respuesta exitosa
-    //         if (email === 'test@example.com' && password === '123456') {
-    //             return { success: true, userID: 1, email };
-    //         }
-    //         return { success: false };
-    //     }
-
-    //     if (action === 'register') {
-    //         return { success: true };
-    //     }
-
-    //     return { success: false };
-    // }
 
 }
 

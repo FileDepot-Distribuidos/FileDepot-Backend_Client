@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import SoapService from '../services/SoapService.js';
+import SoapService from '../services/soapService.js';
 
 class AuthController {
     // Validar credenciales a través del servicio SOAP y generar JWT
@@ -10,18 +10,17 @@ class AuthController {
             console.log('Password:', password);
 
             // Llamada al servicio SOAP
-            const response = await SoapService.processAuthRequest({
-                action: 'login',
-                email,
-                password,
-            });
+            const response = await SoapService.processAuthRequest(
+                'login',
+                { email, password }
+            );
 
             // Validar respuesta del servicio SOAP
             if (response?.success) {
                 // Generar JWT
                 const token = jwt.sign(
-                    { userID: response.userID, email: response.email }, 
-                    'SECRET_KEY', 
+                    { userID: response.userID, email: response.email },
+                    'SECRET_KEY',
                     { expiresIn: '1h' }
                 );
                 return res.status(200).json({ token });
@@ -40,13 +39,18 @@ class AuthController {
         try {
             const { email, password, phone } = req.body;
 
+            console.log('Email:', email);
+            console.log('Password:', password);
+            console.log('Phone:', phone);
+
             // Llamada al servicio SOAP
-            const response = await SoapService.processAuthRequest({
-                action: 'register',
-                email,
-                password,
-                phone
-            });
+            const response = await SoapService.processAuthRequest(
+                'register',
+                {
+                    email,
+                    password,
+                    phone
+                });
 
             // Validar respuesta del servicio SOAP
             if (response.success) {
