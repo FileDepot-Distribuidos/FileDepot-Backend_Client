@@ -1,18 +1,16 @@
-import SoapService from '../services/SoapService.js';
+import SoapService from '../services/soapService.js';
 
 class DirectoryController {
-
+    
     // Crear un nuevo directorio con SOAP
     static async createDirectory(req, res) {
         try {
             const { path, isRoot, parentDirectory } = req.body;
 
-            const response = await SoapService.processDirectoryRequest({
-                action: 'createDirectory',
-                path,
-                isRoot,
-                parentDirectory
-            });
+            const response = await SoapService.processDirectoryRequest(
+                'createDirectory',
+                { path, isRoot, parentDirectory }
+            );
 
             if (response.success) {
                 return res.status(201).json(response.directory);
@@ -30,11 +28,10 @@ class DirectoryController {
         try {
             const { parentDirectory, subdirectory } = req.body;
 
-            const response = await SoapService.processDirectoryRequest({
-                action: 'addSubdirectory',
-                parentDirectory,
-                subdirectory
-            });
+            const response = await SoapService.processDirectoryRequest(
+                'addSubdirectory',
+                { parentDirectory, subdirectory }
+            );
 
             if (response.success) {
                 return res.status(201).json(response.subdirectory);
@@ -50,7 +47,10 @@ class DirectoryController {
     // Listar directorios con SOAP
     static async listDirectories(req, res) {
         try {
-            const response = await SoapService.processDirectoryRequest({ action: 'listDirectories' });
+            const response = await SoapService.processDirectoryRequest(
+                'listDirectories',
+                {} // No se requiere data
+            );
 
             if (response.success) {
                 return res.status(200).json(response.directories);
@@ -68,11 +68,10 @@ class DirectoryController {
         try {
             const { directoryID, newName } = req.body;
 
-            const response = await SoapService.processDirectoryRequest({
-                action: 'renameDirectory',
-                directoryID,
-                newName
-            });
+            const response = await SoapService.processDirectoryRequest(
+                'renameDirectory',
+                { directoryID, newName }
+            );
 
             if (response.success) {
                 return res.status(200).json({ message: `Directorio ${directoryID} renombrado a ${newName}` });
@@ -90,10 +89,10 @@ class DirectoryController {
         try {
             const { directoryID } = req.body;
 
-            const response = await SoapService.processDirectoryRequest({
-                action: 'deleteDirectory',
-                directoryID
-            });
+            const response = await SoapService.processDirectoryRequest(
+                'deleteDirectory',
+                { directoryID }
+            );
 
             if (response.success) {
                 return res.status(200).json({ message: `Directorio ${directoryID} eliminado` });
@@ -111,11 +110,10 @@ class DirectoryController {
         try {
             const { directoryID, file } = req.body;
 
-            const response = await SoapService.processDirectoryRequest({
-                action: 'addFile',
-                directoryID,
-                file
-            });
+            const response = await SoapService.processDirectoryRequest(
+                'addFile',
+                { directoryID, file }
+            );
 
             if (response.success) {
                 return res.status(201).json(response.file);
@@ -133,11 +131,10 @@ class DirectoryController {
         try {
             const { directoryID, newParentDirectory } = req.body;
 
-            const response = await SoapService.processDirectoryRequest({
-                action: 'moveDirectory',
-                directoryID,
-                newParentDirectory
-            });
+            const response = await SoapService.processDirectoryRequest(
+                'moveDirectory',
+                { directoryID, newParentDirectory }
+            );
 
             if (response.success) {
                 return res.status(200).json({ message: `Directorio ${directoryID} movido a ${newParentDirectory}` });

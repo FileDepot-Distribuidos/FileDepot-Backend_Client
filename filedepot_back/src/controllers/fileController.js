@@ -1,20 +1,16 @@
-import SoapService from '../services/SoapService.js';
+import SoapService from '../services/soapService.js';
 
 class FileController {
     
     // Subir un archivo a través del servicio SOAP
     static async uploadFile(req, res) {
         try {
-            const { name, size, owner } = req.body;
-
-            // Llamada al servicio SOAP
-            const response = await SoapService.processFileRequest({
-                action: 'upload',
-                base64,
-                name,
-                size,
-                owner
-            });
+            const { base64, name, size, owner } = req.body;
+            
+            const response = await SoapService.processFileRequest(
+                'upload',
+                { base64, name, size, owner }
+            );
 
             if (response.success) {
                 return res.status(201).json(response.file);
@@ -31,12 +27,11 @@ class FileController {
     static async readFile(req, res) {
         try {
             const { fileID } = req.params;
-
-            // Llamada a SOAP
-            const response = await SoapService.processFileRequest({
-                action: 'read',
-                fileID
-            });
+            
+            const response = await SoapService.processFileRequest(
+                'read',
+                { fileID }
+            );
 
             if (response.success) {
                 return res.status(200).json(response.file);
@@ -53,12 +48,11 @@ class FileController {
     static async downloadFile(req, res) {
         try {
             const { fileID } = req.params;
-
-            // Llamada a SOAP
-            const response = await SoapService.processFileRequest({
-                action: 'download',
-                fileID
-            });
+            
+            const response = await SoapService.processFileRequest(
+                'download',
+                { fileID }
+            );
 
             if (response.success) {
                 return res.status(200).json({ url: response.downloadUrl });
@@ -75,13 +69,11 @@ class FileController {
     static async moveFile(req, res) {
         try {
             const { fileID, newDirectoryID } = req.body;
-
-            // Llamada a SOAP
-            const response = await SoapService.processFileRequest({
-                action: 'move',
-                fileID,
-                newDirectoryID
-            });
+            
+            const response = await SoapService.processFileRequest(
+                'move',
+                { fileID, newDirectoryID }
+            );
 
             if (response.success) {
                 return res.status(200).json({ message: `Archivo ${fileID} movido` });
@@ -98,12 +90,11 @@ class FileController {
     static async deleteFile(req, res) {
         try {
             const { fileID } = req.body;
-
-            // Llamada a SOAP
-            const response = await SoapService.processFileRequest({
-                action: 'delete',
-                fileID
-            });
+            
+            const response = await SoapService.processFileRequest(
+                'delete',
+                { fileID }
+            );
 
             if (response.success) {
                 return res.status(200).json({ message: `Archivo ${fileID} eliminado` });

@@ -2,7 +2,6 @@ import soap from 'soap';
 
 const WSDL_URL = "http://localhost:2005/FileDepotService?wsdl";
 
-
 class SoapService {
     constructor() {
         this.client = null;
@@ -19,44 +18,42 @@ class SoapService {
         }
     }
 
-    // Método genérico para solicitudes SOAP
-    async processSoapRequest(action, data) {
-
+    // Método genérico que selecciona el método SOAP correcto
+    async processSoapRequest(serviceMethod, action, data) {
         await this.initClient();
-        return this.client["processAuthRequestAsync"](data)
-            .then(response => {
-                console.log("📡 XML Enviado:\n", this.client.lastRequest);
-                return response[0];
-            })
+        
+        if (!this.client[`${serviceMethod}Async`]) {
+            throw new Error(`Método SOAP no encontrado: ${serviceMethod}Async`);
+        }
+
+        // Se envía la acción y los datos en el formato correcto
+        const payload = { action, data: JSON.stringify(data) };
+
+        return this.client[`${serviceMethod}Async`](payload)
+            .then(response => response[0]) // Retornar solo la respuesta
             .catch(err => {
                 console.error(`SOAP Error in ${action}:`, err);
                 throw err;
             });
     }
 
-    // Procesar solicitudes de archivos
+    // Métodos específicos con el nombre del servicio correcto
     async processFileRequest(action, data) {
-        return this.processSoapRequest(action, data);
+        return this.processSoapRequest("processFileRequest", action, data);
     }
 
-    // Procesar solicitudes de directorios
     async processDirectoryRequest(action, data) {
-        return this.processSoapRequest(action, data);
+        return this.processSoapRequest("processDirectoryRequest", action, data);
     }
 
-    // Procesar solicitudes de compartir archivos/directorios
     async processShareRequest(action, data) {
-        return this.processSoapRequest(action, data);
+        return this.processSoapRequest("processShareRequest", action, data);
     }
-
-    // Autenticación
 
     async processAuthRequest(action, data) {
-        const payload = { action, data: JSON.stringify(data) };        
-        const response = await this.processSoapRequest("processAuthRequest", payload);
-        return JSON.parse(response.return);
+        const response = await this.processSoapRequest("processAuthRequest", action, data);
+        return JSON.parse(response.return); // Retornar el JSON correctamente parseado
     }
-
 }
 
 export default new SoapService();

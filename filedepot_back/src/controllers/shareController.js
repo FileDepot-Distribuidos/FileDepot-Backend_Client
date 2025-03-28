@@ -1,4 +1,4 @@
-import SoapService from '../services/SoapService.js';
+import SoapService from '../services/soapService.js';
 
 class ShareController {
     
@@ -8,12 +8,10 @@ class ShareController {
             const { sharedWith, sharedBy, sharedFile } = req.body;
 
             // Llamada al servicio SOAP
-            const response = await SoapService.processShareRequest({
-                action: 'shareFile',
-                sharedWith,
-                sharedBy,
-                sharedFile
-            });
+            const response = await SoapService.processShareRequest(
+                'shareFile',
+                { sharedWith, sharedBy, sharedFile }
+            );
 
             if (response.success) {
                 return res.status(201).json(response.share);
@@ -32,12 +30,10 @@ class ShareController {
             const { sharedWith, sharedBy, sharedDirectory } = req.body;
 
             // Llamada al servicio SOAP
-            const response = await SoapService.processShareRequest({
-                action: 'shareDirectory',
-                sharedWith,
-                sharedBy,
-                sharedDirectory
-            });
+            const response = await SoapService.processShareRequest(
+                'shareDirectory',
+                { sharedWith, sharedBy, sharedDirectory }
+            );
 
             if (response.success) {
                 return res.status(201).json(response.share);
@@ -56,10 +52,10 @@ class ShareController {
             const { shareID } = req.body;
 
             // Llamada a SOAP
-            const response = await SoapService.processShareRequest({
-                action: 'revokeAccess',
-                shareID
-            });
+            const response = await SoapService.processShareRequest(
+                'revokeAccess',
+                { shareID }
+            );
 
             if (response.success) {
                 return res.status(200).json({ message: `Acceso revocado para el share ${shareID}` });
@@ -76,7 +72,7 @@ class ShareController {
     static async listSharedFiles(req, res) {
         try {
             // Llamada a SOAP
-            const response = await SoapService.processShareRequest({ action: 'listSharedFiles' });
+            const response = await SoapService.processShareRequest('listSharedFiles', {});
 
             if (response.success) {
                 return res.status(200).json(response.sharedFiles);

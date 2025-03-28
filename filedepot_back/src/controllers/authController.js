@@ -6,8 +6,6 @@ class AuthController {
     static async login(req, res) {
         try {
             const { email, password } = req.body;
-            console.log('Email:', email);
-            console.log('Password:', password);
 
             // Llamada al servicio SOAP
             const response = await SoapService.processAuthRequest(
@@ -38,10 +36,6 @@ class AuthController {
     static async register(req, res) {
         try {
             const { email, password, phone } = req.body;
-
-            console.log('Email:', email);
-            console.log('Password:', password);
-            console.log('Phone:', phone);
 
             // Llamada al servicio SOAP
             const response = await SoapService.processAuthRequest(
