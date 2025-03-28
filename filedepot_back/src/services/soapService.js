@@ -41,27 +41,27 @@ class SoapService {
 
     // Autenticación
     
-    // async processAuthRequest(action, data) {
-    //     return this.processSoapRequest(action, data);
-    // }
-
-    async processAuthRequest({ action, email, password }) {
-        console.log(`Mocked SOAP Request: action=${action}, email=${email}, password=${password}`);
-
-        if (action === 'login') {
-            // Simulación de una respuesta exitosa
-            if (email === 'test@example.com' && password === '123456') {
-                return { success: true, userID: 1, email };
-            }
-            return { success: false };
-        }
-
-        if (action === 'register') {
-            return { success: true };
-        }
-
-        return { success: false };
+    async processAuthRequest(action, data) {
+        return this.processSoapRequest(action, data);
     }
+
+    // async processAuthRequest({ action, email, password }) {
+    //     console.log(`Mocked SOAP Request: action=${action}, email=${email}, password=${password}`);
+
+    //     if (action === 'login') {
+    //         // Simulación de una respuesta exitosa
+    //         if (email === 'test@example.com' && password === '123456') {
+    //             return { success: true, userID: 1, email };
+    //         }
+    //         return { success: false };
+    //     }
+
+    //     if (action === 'register') {
+    //         return { success: true };
+    //     }
+
+    //     return { success: false };
+    // }
 
 }
 
