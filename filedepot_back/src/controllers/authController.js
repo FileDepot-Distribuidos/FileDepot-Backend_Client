@@ -6,6 +6,8 @@ class AuthController {
     static async login(req, res) {
         try {
             const { email, password } = req.body;
+            console.log('Login request recibido desde el front-end!');
+            
 
             // Llamada al servicio SOAP
             const response = await SoapService.processAuthRequest(
@@ -60,7 +62,7 @@ class AuthController {
     }
 
     // Validar JWT
-    static validateJWT(req, res) {
+    static validateJWT(req, res, next) {
         const token = req.headers.authorization?.split(' ')[1];
 
         if (!token) {

@@ -13,6 +13,8 @@ class FileController {
             );
 
             if (response.success) {
+                console.log(response);
+                
                 return res.status(201).json(response.file);
             } else {
                 return res.status(400).json({ message: 'Error al subir el archivo' });

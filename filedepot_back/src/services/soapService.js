@@ -37,22 +37,24 @@ class SoapService {
             });
     }
 
-    // Métodos específicos con el nombre del servicio correcto
     async processFileRequest(action, data) {
-        return this.processSoapRequest("processFileRequest", action, data);
+        const response = await this.processSoapRequest("processFileRequest", action, data);
+        return JSON.parse(response.return);
     }
 
     async processDirectoryRequest(action, data) {
-        return this.processSoapRequest("processDirectoryRequest", action, data);
+        const response = await this.processSoapRequest("processDirectoryRequest", action, data);
+        return JSON.parse(response.return);
     }
 
     async processShareRequest(action, data) {
-        return this.processSoapRequest("processShareRequest", action, data);
+        const response = await this.processSoapRequest("processShareRequest", action, data);
+        return JSON.parse(response.return);
     }
 
     async processAuthRequest(action, data) {
         const response = await this.processSoapRequest("processAuthRequest", action, data);
-        return JSON.parse(response.return); // Retornar el JSON correctamente parseado
+        return JSON.parse(response.return);
     }
 }
 
