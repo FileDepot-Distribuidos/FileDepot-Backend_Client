@@ -18,43 +18,44 @@ class SoapService {
         }
     }
 
-    // Método genérico que selecciona el método SOAP correcto
     async processSoapRequest(serviceMethod, action, data) {
         await this.initClient();
-        
+    
         if (!this.client[`${serviceMethod}Async`]) {
             throw new Error(`Método SOAP no encontrado: ${serviceMethod}Async`);
         }
-
-        // Se envía la acción y los datos en el formato correcto
+    
         const payload = { action, data: JSON.stringify(data) };
-
+    
         return this.client[`${serviceMethod}Async`](payload)
-            .then(response => response[0]) // Retornar solo la respuesta
+            .then(response => {
+                const raw = response[0]?.return || "{}";
+                const parsed = JSON.parse(raw); 
+                return parsed;
+            })
             .catch(err => {
                 console.error(`SOAP Error in ${action}:`, err);
                 throw err;
             });
     }
+    
 
+    // Métodos específicos con el nombre del servicio correcto
     async processFileRequest(action, data) {
-        const response = await this.processSoapRequest("processFileRequest", action, data);
-        return JSON.parse(response.return);
+        return this.processSoapRequest("processFileRequest", action, data);
     }
 
     async processDirectoryRequest(action, data) {
-        const response = await this.processSoapRequest("processDirectoryRequest", action, data);
-        return JSON.parse(response.return);
+        return this.processSoapRequest("processDirectoryRequest", action, data);
     }
 
     async processShareRequest(action, data) {
-        const response = await this.processSoapRequest("processShareRequest", action, data);
-        return JSON.parse(response.return);
+        return this.processSoapRequest("processShareRequest", action, data);
     }
 
     async processAuthRequest(action, data) {
         const response = await this.processSoapRequest("processAuthRequest", action, data);
-        return JSON.parse(response.return);
+        return JSON.parse(response.return); 
     }
 }
 
