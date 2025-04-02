@@ -24,6 +24,19 @@ class FileController {
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
+    
+    // Método para recibir datos de un archivo
+    static recibirArchivo(req, res) {
+        const { name, type, size } = req.body;
+        
+            if (!name || !type || !size) {
+                return res.status(400).json({ message: "Faltan datos del archivo" });
+            }
+        
+            console.log("Datos recibidos:", { name, type, size });
+        
+            res.json({ message: "Datos del archivo recibidos correctamente" });
+    }
 
     // Leer un archivo usando SOAP
     static async readFile(req, res) {
