@@ -24,8 +24,8 @@ class FileController {
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
-    
-    // Método para recibir datos de un archivo
+
+    // Método para recibir datos de un archivo PRUEBA!!!!!!!!!!!!!
     static recibirArchivo(req, res) {
         const { name, type, size } = req.body;
         

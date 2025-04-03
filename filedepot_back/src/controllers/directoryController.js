@@ -1,5 +1,6 @@
 import SoapService from '../services/soapService.js';
 
+
 class DirectoryController {
     
     // Crear un nuevo directorio con SOAP
@@ -22,7 +23,6 @@ class DirectoryController {
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
-
     // Agregar un subdirectorio usando SOAP
     static async addSubdirectory(req, res) {
         try {
