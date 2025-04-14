@@ -28,6 +28,8 @@ router.get('/files/:fileID/download', AuthController.validateJWT, FilesControlle
 router.put('/files/move', AuthController.validateJWT, FilesController.moveFile);
 router.delete('/files', AuthController.validateJWT, FilesController.deleteFile);
 router.post('/files/recibe', FilesController.recibirArchivo);//ruta prueba
+router.get('/files', FilesController.listFiles); //mostrar archivo prueba
+
 
 //Rutas de compartir archivos y directorios
 router.post('/share/file', AuthController.validateJWT, ShareController.shareFile);

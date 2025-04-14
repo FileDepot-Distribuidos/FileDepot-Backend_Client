@@ -38,6 +38,61 @@ class FileController {
             res.json({ message: "Datos del archivo recibidos correctamente" });
     }
 
+ // Mostrar archivos (con datos falsos) PRUEBAAAAAAAAAAAA
+ static async listFiles(req, res) {
+    try {
+        const fakeFiles = [
+            {
+                id: '1',
+                name: 'Documento Word.docx',
+                type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                size: '204800', // 200 KB
+                owner_id: '1'
+            },
+            {
+                id: '2',
+                name: 'Informe.pdf',
+                type: 'application/pdf',
+                size: '10957093', // 500 KB
+                owner_id: '2'
+            },
+            {
+                id: '3',
+                name: 'Imagen.png',
+                type: 'image/png',
+                size: '102400', // 100 KB
+                owner_id: '3'
+            },
+            {
+                id: '4',
+                name: 'Documento Word.docx',
+                type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                size: '204800', // 200 KB
+                owner_id: '1'
+            },
+            {
+                id: '5',
+                name: 'Informe.pdf',
+                type: 'application/pdf',
+                size: '10957093', // 500 KB
+                owner_id: '2'
+            },
+            {
+                id: '6',
+                name: 'Imagen.png',
+                type: 'image/png',
+                size: '102400', // 100 KB
+                owner_id: '3'
+            }
+        ];
+
+        return res.status(200).json(fakeFiles);
+    } catch (error) {
+        console.error('Error al listar archivos:', error);
+        return res.status(500).json({ message: 'Error interno en el servidor' });
+    }
+}
+
     // Leer un archivo usando SOAP
     static async readFile(req, res) {
         try {
