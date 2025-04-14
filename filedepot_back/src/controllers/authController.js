@@ -17,9 +17,10 @@ class AuthController {
 
             // Validar respuesta del servicio SOAP
             if (response?.success) {
+
                 // Generar JWT
                 const token = jwt.sign(
-                    { userID: response.userID, email: response.email },
+                    { userId: response.data.userId },
                     'SECRET_KEY',
                     { expiresIn: '1h' }
                 );
