@@ -15,11 +15,12 @@ router.get('/auth/validate', AuthController.validateJWT);
 // Rutas de directorios
 router.post('/directories', AuthController.validateJWT, DirectoryController.createDirectory);
 router.post('/directories/:directoryID', AuthController.validateJWT, DirectoryController.addSubdirectory);
-router.get('/directories', AuthController.validateJWT, DirectoryController.listDirectories);
 router.put('/directories/rename', AuthController.validateJWT, DirectoryController.renameDirectory);
 router.delete('/directories', AuthController.validateJWT, DirectoryController.deleteDirectory);
 router.post('/directories/add-file', AuthController.validateJWT, DirectoryController.addFile);
 router.put('/directories/move', AuthController.validateJWT, DirectoryController.moveDirectory);
+router.get('/directories', AuthController.validateJWT, DirectoryController.listAllDirectories);
+router.get('/directories/dir/:dir', AuthController.validateJWT, DirectoryController.listDirectories);
 
 //Rutas de archivos
 router.post('/files', AuthController.validateJWT, FilesController.uploadFile);
@@ -28,7 +29,8 @@ router.get('/files/:fileID/download', AuthController.validateJWT, FilesControlle
 router.put('/files/move', AuthController.validateJWT, FilesController.moveFile);
 router.delete('/files', AuthController.validateJWT, FilesController.deleteFile);
 router.post('/files/recibe', FilesController.recibirArchivo);
-router.get('/files', AuthController.validateJWT, FilesController.listFiles); //traer todos los archivos de un usuario
+router.get('/files', AuthController.validateJWT, FilesController.listAllFiles);
+router.get('/files/dir/:dir', AuthController.validateJWT, FilesController.listFiles);
 
 
 //Rutas de compartir archivos y directorios

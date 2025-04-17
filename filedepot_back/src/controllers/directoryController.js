@@ -45,15 +45,42 @@ class DirectoryController {
     }
 
     // Listar directorios con SOAP
-    static async listDirectories(req, res) {
+    static async listAllDirectories(req, res) {
+
+        const userId = req.user.userId;
+
         try {
             const response = await SoapService.processDirectoryRequest(
-                'listDirectories',
-                {} // No se requiere data
+                'getAllDirs',
+                { userId }
             );
 
             if (response.success) {
-                return res.status(200).json(response.directories);
+                const parsedData = JSON.parse(response.data);
+                return res.status(201).json(parsedData);
+            } else {
+                return res.status(400).json({ message: 'No se pudieron listar los directorios' });
+            }
+        } catch (error) {
+            console.error('Error al listar directorios:', error);
+            return res.status(500).json({ message: 'Error interno en el servidor' });
+        }
+    }
+
+    static async listDirectories(req, res) {
+
+        const userId = req.user.userId;
+        const { dir } = req.params;
+
+        try {
+            const response = await SoapService.processDirectoryRequest(
+                'getDirs',
+                { userId, dir }
+            );
+
+            if (response.success) {
+                const parsedData = JSON.parse(response.data);
+                return res.status(201).json(parsedData);
             } else {
                 return res.status(400).json({ message: 'No se pudieron listar los directorios' });
             }

@@ -40,17 +40,37 @@ class FileController {
     }
 
 
-    static async listFiles(req, res) {
+    static async listAllFiles(req, res) {
         try {
 
             const userId = req.user.userId;
 
-            console.log(`userId: ${userId}`);
-            
+            const response = await SoapService.processFileRequest(
+                'getAllFiles',
+                { userId }
+            );
 
+            if (response.success) {
+                const parsedData = JSON.parse(response.data);
+                return res.status(201).json(parsedData);
+            } else {
+                return res.status(400).json({ message: 'Error al obtener archivos' });
+            }
+        } catch (error) {
+            console.error('Error al listar archivos:', error);
+            return res.status(500).json({ message: 'Error interno en el servidor' });
+        }
+    }
+
+    static async listFiles(req, res) {
+        try {
+
+            const userId = req.user.userId;
+            const { dir } = req.params;
+            
             const response = await SoapService.processFileRequest(
                 'getFiles',
-                { userId }
+                { userId, dir }
             );
 
             if (response.success) {
