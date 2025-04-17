@@ -110,14 +110,17 @@ class FileController {
     static async downloadFile(req, res) {
         try {
             const { fileID } = req.params;
-
-            const response = await SoapService.processFileRequest(
-                'download',
-                { fileID }
-            );
-
-            if (response.success) {
-                return res.status(200).json({ url: response.downloadUrl });
+    
+            const response = await SoapService.processFileRequest('download', { fileID });
+    
+            if (response.success && response.base64File && response.fileName) {
+                const buffer = Buffer.from(response.base64File, 'base64');
+    
+                res.setHeader('Content-Disposition', `attachment; filename="${response.fileName}"`);
+                res.setHeader('Content-Type', 'application/octet-stream');
+                res.setHeader('Content-Length', buffer.length);
+    
+                return res.send(buffer);
             } else {
                 return res.status(404).json({ message: 'Archivo no encontrado' });
             }
