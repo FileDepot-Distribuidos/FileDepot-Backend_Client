@@ -4,9 +4,18 @@ class ShareController {
     
     // Compartir un archivo a través de SOAP
     static async shareFile(req, res) {
-        try {
-            const { sharedWith, sharedBy, sharedFile } = req.body;
+        // Validar el token JWT
 
+
+        try {
+            const sharedBy = req.user.userId;
+
+            const { sharedWith, sharedFile } = req.body;
+
+            console.log('sharedWith:', sharedWith);
+            console.log('sharedBy:', sharedBy);
+            console.log('sharedFile:', sharedFile);
+            
             // Llamada al servicio SOAP
             const response = await SoapService.processShareRequest(
                 'shareFile',
@@ -27,7 +36,13 @@ class ShareController {
     // Compartir un directorio usando SOAP
     static async shareDirectory(req, res) {
         try {
-            const { sharedWith, sharedBy, sharedDirectory } = req.body;
+
+            const sharedBy = req.user.userId;
+            const { sharedWith, sharedDirectory } = req.body;
+
+            console.log('sharedWith:', sharedWith);
+            console.log('sharedBy:', sharedBy);
+            console.log('sharedDirectory:', sharedDirectory);
 
             // Llamada al servicio SOAP
             const response = await SoapService.processShareRequest(
@@ -70,12 +85,18 @@ class ShareController {
 
     // Listar archivos compartidos usando SOAP
     static async listSharedFiles(req, res) {
+
+        const userId = req.user.userId; // Obtener el ID del usuario desde el token JWT
+
         try {
             // Llamada a SOAP
-            const response = await SoapService.processShareRequest('listSharedFiles', {});
+            const response = await SoapService.processShareRequest('listSharedFiles', {
+                userId
+            });
 
             if (response.success) {
-                return res.status(200).json(response.sharedFiles);
+                const parsedData = JSON.parse(response.data);
+                return res.status(201).json(parsedData);
             } else {
                 return res.status(400).json({ message: 'No se pudieron recuperar los archivos compartidos' });
             }
