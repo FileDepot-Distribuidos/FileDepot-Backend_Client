@@ -26,6 +26,7 @@ router.get('/directories/dir/:dir', AuthController.validateJWT, DirectoryControl
 router.post('/files', AuthController.validateJWT, FilesController.uploadFile);
 router.get('/files/:fileID', AuthController.validateJWT, FilesController.readFile);
 router.get('/files/download/:fileID', AuthController.validateJWT, FilesController.downloadFile);
+router.get('/files/read/:fileID', AuthController.validateJWT, FilesController.downloadFile);
 router.put('/files/move', AuthController.validateJWT, FilesController.moveFile);
 router.delete('/files', AuthController.validateJWT, FilesController.deleteFile);
 router.post('/files/recibe', FilesController.recibirArchivo);

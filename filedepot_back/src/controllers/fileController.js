@@ -90,21 +90,33 @@ class FileController {
     static async readFile(req, res) {
         try {
             const { fileID } = req.params;
-
-            const response = await SoapService.processFileRequest(
-                'read',
-                { fileID }
-            );
-
-            if (response.success) {
-                return res.status(200).json(response.file);
-            } else {
-                return res.status(404).json({ message: 'Archivo no encontrado' });
+        
+            // Llamada al servicio para obtener la respuesta con base64
+            const fileData = await SoapService.processFileRequest('read', { fileID });
+        
+            // Verificamos que haya algo
+            if (!fileData || !fileData.data) {
+              return res.status(404).json({ message: 'Archivo no encontrado' });
             }
-        } catch (error) {
-            console.error('Error al leer archivo:', error);
+        
+            // Obtener el nombre y tipo MIME del archivo
+            const fileName = fileData.filename || 'archivo_descargado';
+            const fileType = fileData.fileType || 'application/octet-stream';
+            const base64Data = fileData.data;
+        
+            // Devolver la respuesta completa en JSON
+            return res.json({
+              success: true,
+              message: 'Archivo descargado correctamente',
+              filename: fileName,
+              fileType: fileType,
+              data: base64Data
+            });
+        
+          } catch (error) {
+            console.error('Error al descargar archivo:', error);
             return res.status(500).json({ message: 'Error interno en el servidor' });
-        }
+          }
     }
 
     // Descargar un archivo a través de SOAP
