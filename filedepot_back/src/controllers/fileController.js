@@ -8,6 +8,7 @@ class FileController {
             const { base64, name, size } = req.body;
 
             const owner = req.user.userId;
+         
 
             const response = await SoapService.processFileRequest(
                 'upload',
@@ -109,26 +110,36 @@ class FileController {
     // Descargar un archivo a través de SOAP
     static async downloadFile(req, res) {
         try {
-            const { fileID } = req.params;
-    
-            const response = await SoapService.processFileRequest('download', { fileID });
-    
-            if (response.success && response.base64File && response.fileName) {
-                const buffer = Buffer.from(response.base64File, 'base64');
-    
-                res.setHeader('Content-Disposition', `attachment; filename="${response.fileName}"`);
-                res.setHeader('Content-Type', 'application/octet-stream');
-                res.setHeader('Content-Length', buffer.length);
-    
-                return res.send(buffer);
-            } else {
-                return res.status(404).json({ message: 'Archivo no encontrado' });
-            }
+          const { fileID } = req.params;
+      
+          // Llamada al servicio para obtener la respuesta con base64
+          const fileData = await SoapService.processFileRequest('download', { fileID });
+      
+          // Verificamos que haya algo
+          if (!fileData || !fileData.data) {
+            return res.status(404).json({ message: 'Archivo no encontrado' });
+          }
+      
+          // Obtener el nombre y tipo MIME del archivo
+          const fileName = fileData.filename || 'archivo_descargado';
+          const fileType = fileData.fileType || 'application/octet-stream';
+          const base64Data = fileData.data;
+      
+          // Devolver la respuesta completa en JSON
+          return res.json({
+            success: true,
+            message: 'Archivo descargado correctamente',
+            filename: fileName,
+            fileType: fileType,
+            data: base64Data
+          });
+      
         } catch (error) {
-            console.error('Error al descargar archivo:', error);
-            return res.status(500).json({ message: 'Error interno en el servidor' });
+          console.error('Error al descargar archivo:', error);
+          return res.status(500).json({ message: 'Error interno en el servidor' });
         }
-    }
+      }
+      
 
     // Mover un archivo usando SOAP
     static async moveFile(req, res) {
