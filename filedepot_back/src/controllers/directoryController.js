@@ -7,22 +7,32 @@ class DirectoryController {
     static async createDirectory(req, res) {
         try {
             const { path, isRoot, parentDirectory } = req.body;
-
+            const owner = req.user.userId;
+    
+            // 🔍 Log de lo que está recibiendo el backend
+            console.log('Datos recibidos en createDirectory:', {
+                path,
+                isRoot,
+                parentDirectory,
+                owner
+            });
+    
             const response = await SoapService.processDirectoryRequest(
                 'createDirectory',
-                { path, isRoot, parentDirectory }
+                { path, isRoot, parentDirectory, owner }
             );
-
+    
             if (response.success) {
                 return res.status(201).json(response.directory);
             } else {
                 return res.status(400).json({ message: 'Error al crear el directorio' });
             }
         } catch (error) {
-            console.error('Error al crear directorio:', error);
+            console.error(' Error al crear directorio:', error);
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
+    
     // Agregar un subdirectorio usando SOAP
     static async addSubdirectory(req, res) {
         try {
