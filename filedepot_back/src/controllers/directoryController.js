@@ -105,9 +105,11 @@ class DirectoryController {
         try {
             const { directoryID, newName } = req.body;
 
+            const userId = req.user.userId;
+
             const response = await SoapService.processDirectoryRequest(
                 'renameDirectory',
-                { directoryID, newName }
+                { directoryID, newName, userId }
             );
 
             if (response.success) {

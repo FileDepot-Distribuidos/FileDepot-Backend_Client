@@ -5,14 +5,18 @@ class FileController {
     // Subir un archivo a través del servicio SOAP
     static async uploadFile(req, res) {
         try {
-            const { base64, name, size } = req.body;
+            const { files } = req.body;
 
             const owner = req.user.userId;
-         
+
+            // Add owner to each file in the list
+            files.forEach(file => {
+                file.owner = owner;
+            });
 
             const response = await SoapService.processFileRequest(
                 'upload',
-                { base64, name, size, owner }
+                { files }
             );
 
             if (response.success) {
@@ -170,6 +174,29 @@ class FileController {
             }
         } catch (error) {
             console.error('Error al mover archivo:', error);
+            return res.status(500).json({ message: 'Error interno en el servidor' });
+        }
+    }
+
+    // Renombrar un archivo usando SOAP
+    static async renameFile(req, res) {
+        try {
+            const { fileID, oldFileName, newFileName } = req.body;
+
+            const userId = req.user.userId;
+
+            const response = await SoapService.processFileRequest(
+                'rename',
+                { userId, oldFileName, newFileName }
+            );
+
+            if (response.success) {
+                return res.status(200).json({ message: `Archivo ${fileID} renombrado a ${newFileName}` });
+            } else {
+                return res.status(400).json({ message: 'No se pudo renombrar el archivo' });
+            }
+        } catch (error) {
+            console.error('Error al renombrar archivo:', error);
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
