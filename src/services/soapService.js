@@ -1,6 +1,10 @@
 import soap from 'soap';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const WSDL_URL = "http://localhost:2005/FileDepotService?wsdl";
+const soapHost = process.env.SOAP_HOST || 'localhost';
+const soapPort = process.env.SOAP_PORT || '2005';
+const WSDL_URL = "http://${soapHost}:${soapPort}/FileDepotService?wsdl";
 
 class SoapService {
     constructor() {
