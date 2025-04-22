@@ -5,23 +5,19 @@ class FileController {
     // Subir un archivo a través del servicio SOAP
     static async uploadFile(req, res) {
         try {
-            const { files } = req.body;
-
+            const { files, directoryId } = req.body; 
             const owner = req.user.userId;
-
-            // Add owner to each file in the list
+    
+            // Añadir owner y directoryId a cada archivo
             files.forEach(file => {
                 file.owner = owner;
+                file.directoryId = directoryId; // <-- incluir el ID del directorio
             });
-
-            const response = await SoapService.processFileRequest(
-                'upload',
-                { files }
-            );
-
+    
+            const response = await SoapService.processFileRequest('upload', { files });
+    
             if (response.success) {
                 console.log(response);
-
                 return res.status(201).json(response.file);
             } else {
                 return res.status(400).json({ message: 'Error al subir el archivo' });
@@ -31,6 +27,7 @@ class FileController {
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
+    
 
     static recibirArchivo(req, res) {
         const { name, type, size } = req.body;
