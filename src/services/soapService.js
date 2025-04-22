@@ -4,7 +4,8 @@ dotenv.config();
 
 const soapHost = process.env.SOAP_HOST || 'localhost';
 const soapPort = process.env.SOAP_PORT || '2005';
-const WSDL_URL = "http://${soapHost}:${soapPort}/FileDepotService?wsdl";
+const WSDL_URL = `http://${soapHost}:${soapPort}/FileDepotService?wsdl`;
+
 
 class SoapService {
     constructor() {
