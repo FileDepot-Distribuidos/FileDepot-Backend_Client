@@ -40,5 +40,6 @@ router.post('/share/file', AuthController.validateJWT, ShareController.shareFile
 router.post('/share/directory', AuthController.validateJWT, ShareController.shareDirectory);
 router.put('/share/revoke', AuthController.validateJWT, ShareController.revokeAccess);
 router.get('/share/list', AuthController.validateJWT, ShareController.listSharedFiles);
+router.get('/share/dirList', AuthController.validateJWT, ShareController.listSharedDirs);
 
 export default router;

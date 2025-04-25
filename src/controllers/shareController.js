@@ -105,6 +105,31 @@ class ShareController {
             return res.status(500).json({ message: 'Error interno en el servidor' });
         }
     }
+
+    static async listSharedDirs(req, res) {
+
+        const userId = req.user.userId;
+
+        console.log("Se estan listando carpetas compartidas para el usuario:", userId);
+        
+
+        try {
+            // Llamada a SOAP
+            const response = await SoapService.processShareRequest('listSharedDirs', {
+                userId
+            });
+
+            if (response.success) {
+                const parsedData = JSON.parse(response.data);
+                return res.status(201).json(parsedData);
+            } else {
+                return res.status(400).json({ message: 'No se pudieron recuperar las carpetas compartidas' });
+            }
+        } catch (error) {
+            console.error('Error al listar carpetas compartidas:', error);
+            return res.status(500).json({ message: 'Error interno en el servidor' });
+        }
+    }
 }
 
 export default ShareController;
