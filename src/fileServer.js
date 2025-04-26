@@ -1,12 +1,17 @@
 import express, { json } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// middleware global
+app.use(cookieParser()); // <-- ya deberías tenerlo
+app.use(cors({
+    origin: 'http://localhost:8080', // o el host de tu frontend
+    credentials: true, // <--- ¡esto es lo que falta!
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
