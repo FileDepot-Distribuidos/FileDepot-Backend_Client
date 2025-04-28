@@ -24,7 +24,13 @@ class AuthController {
                     'SECRET_KEY',
                     { expiresIn: '1h' }
                 );
-                return res.status(200).json({ token });
+                res.cookie('token', token, {
+                    httpOnly: true, // importante para seguridad (JS no puede acceder)
+                    secure: false, // solo en HTTPS (en local puedes ponerlo false si quieres)
+                    sameSite: 'Strict', // evita CSRF
+                    maxAge: 60 * 60 * 1000 // 1 hora en milisegundos
+                });
+                return res.status(200).json({ message: 'Login exitoso' });                
             }
 
             return res.status(401).json({ message: 'Credenciales inválidas' });
@@ -62,24 +68,51 @@ class AuthController {
         }
     }
 
+    static logout(req, res) {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'Strict'
+        });
+        return res.status(200).json({ message: 'Sesión cerrada' });
+    }
+
     // Validar JWT
     static validateJWT(req, res, next) {
-        const token = req.headers.authorization?.split(' ')[1];
+     
+        const token = req.cookies.token;
 
         if (!token) {
             return res.status(403).json({ message: 'Token no proporcionado' });
         }
-
+    
         jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
             if (err) {
                 return res.status(403).json({ message: 'Token inválido' });
             }
-
+    
             req.user = decoded;
             next();
-
         });
-    }
+    }    
+
+    static validateSession(req, res) {
+        const token = req.cookies.token;
+    
+        if (!token) {
+            return res.status(403).json({ message: 'Token no proporcionado' });
+        }
+    
+        jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
+            if (err) {
+                return res.status(403).json({ message: 'Token inválido' });
+            }
+    
+            // Token válido, responder OK
+            return res.status(200).json({ message: 'Token válido', user: decoded });
+        });
+    }     
+
 }
 
 export default AuthController;

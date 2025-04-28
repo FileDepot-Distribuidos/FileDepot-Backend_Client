@@ -10,7 +10,8 @@ import AuthController from '../controllers/authController.js';
 //Rutas de autenticación
 router.post('/auth/login', AuthController.login);
 router.post('/auth/register', AuthController.register);
-router.get('/auth/validate', AuthController.validateJWT);
+router.get('/auth/validate', AuthController.validateSession);
+router.post('/auth/logout', AuthController.logout);
 
 // Rutas de directorios
 router.post('/directories', AuthController.validateJWT, DirectoryController.createDirectory);
